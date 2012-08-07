@@ -1,0 +1,12 @@
+{application, rebar_js_stylus_plugin,
+ [
+  {description, "Rebar JavaScript Stylus Plugin"},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {mod, { rebar_js_stylus_plugin, []}},
+  {env, []}
+ ]}.
