@@ -65,7 +65,7 @@
 %% Public API
 %% ===================================================================
 
-
+-spec compile(rebar_config:config(), _) -> 'ok'.
 compile(Config, _AppFile) ->
     Options = options(Config),
     DocRoot = option(doc_root, Options),
@@ -74,6 +74,21 @@ compile(Config, _AppFile) ->
                 || Stylesheet <- Stylesheets],
     process(Targets, Options).
 
+
+-spec clean(rebar_config:config(), _) -> 'ok'.
+clean(Config, _AppFile) ->
+    Options = options(Config),
+    OutDir = option(out_dir, Options),
+    case rebar_utils:find_files(OutDir, ".*\\.css$") of
+        [] ->
+            ok;
+        Targets ->
+            delete_each(Targets)
+    end.
+
+%% ===================================================================
+%% Internal functions
+%% ===================================================================
 process([], _Options) ->
     ok;
 process(Targets, Options) ->
@@ -100,20 +115,6 @@ process(Targets, Options) ->
                 "Bypassing stylesheet processing of ~s: stylus missing.~n", [DocRoot]),
             {error, missing_stylus}
     end.
-
-clean(Config, _AppFile) ->
-    Options = options(Config),
-    OutDir = option(out_dir, Options),
-    case rebar_utils:find_files(OutDir, ".*\\.css$") of
-        [] ->
-            ok;
-        Targets ->
-            delete_each(Targets)
-    end.
-
-%% ===================================================================
-%% Internal functions
-%% ===================================================================
 
 options(Config) ->
     rebar_config:get_local(Config, js_stylus, []).
